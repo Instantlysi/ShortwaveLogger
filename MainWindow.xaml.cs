@@ -20,9 +20,25 @@ namespace SWLogger
     /// </summary>
     public partial class MainWindow : Window
     {
+        SettingsWindow settingsWindow = new SettingsWindow();
+        string dataPath;
+        string historyPath;
+
         public MainWindow()
         {
             InitializeComponent();
+            dataPath = settingsWindow.dataPath;
+            historyPath = settingsWindow.historyPath;
+        }
+
+        private void Exit_Click(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Application.Current.Shutdown();
+        }
+
+        private void Settings_Click(object sender, RoutedEventArgs e)
+        {
+            settingsWindow.ShowDialog();
         }
     }
 }
