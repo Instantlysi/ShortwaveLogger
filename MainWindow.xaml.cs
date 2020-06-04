@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+
 namespace SWLogger
 {
     /// <summary>
@@ -30,6 +31,8 @@ namespace SWLogger
         string dataPath;
         string historyPath;
         string[] schedEntry;
+
+        int hitIndex = 0;
         DateTime UTC = DateTime.UtcNow;
         public MainWindow()
         {
@@ -106,13 +109,32 @@ namespace SWLogger
         private void OnAirGrid_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
         {
             ContextMenu m = new ContextMenu();
-            m.Items.Add("Quick Add");
-            m.Items.Add("Add with notes");
+            m = RightClickMenu;
+            //m.Items.Add("");
+            //m.Items.Add("Populate list");
             m.IsOpen = true;
 
             HitTestResult hitTestResult = VisualTreeHelper.HitTest(OnAirGrid, e.GetPosition(OnAirGrid));
             DataGridRow dataGridRow = hitTestResult.VisualHit.GetParentOfType<DataGridRow>();
-            int index = dataGridRow.GetIndex();
+            try
+            {
+                hitIndex = dataGridRow.GetIndex();
+            }
+            catch (Exception) { }
+        }       
+
+        private void QuickAdd_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+        private void Populate_Click(object sender, RoutedEventArgs e)
+        {
+            FreqBox.Text = onAirEntries[hitIndex].Frequency;
+            StationBox.Text = onAirEntries[hitIndex].Station;
+            CountryText.Content = onAirEntries[hitIndex].Country;
+            LanguageText.Content = onAirEntries[hitIndex].Language;
+            BroadcastText.Content = onAirEntries[hitIndex].BroadcastTime;
+            TimeText.Content = new TimeSpan(UTC.Hour, UTC.Minute, UTC.Second).ToString(); ;
         }
     }
     public static class Extensions
