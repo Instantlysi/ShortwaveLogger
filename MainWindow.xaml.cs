@@ -26,6 +26,7 @@ namespace SWLogger
         Schedule scheduleE;
         List<Schedule> schEntries = new List<Schedule>();
         List<Schedule> onAirEntries = new List<Schedule>();
+        List<string> stationName = new List<string>();
         DispatcherTimer dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
         DispatcherTimer minuteTick = new System.Windows.Threading.DispatcherTimer();
         string dataPath;
@@ -51,6 +52,7 @@ namespace SWLogger
             dataPath = settingsWindow.dataPath;
             historyPath = settingsWindow.historyPath;
             schedEntry = File.ReadAllLines(dataPath);
+            StationBox.ItemsSource = stationName;
             DrawLive();
         }
 
@@ -86,6 +88,20 @@ namespace SWLogger
                 string[] split = entry.Split(';');
                 scheduleE = new Schedule(split);
                 schEntries.Add(scheduleE);
+                bool dupe = false;
+                for (int i = 0; i < stationName.Count; i++)
+                {
+                    if (stationName[i] == scheduleE.Station)
+                    {
+                        dupe = true;
+                    }
+                }
+
+                if (dupe != true)
+                {
+                    stationName.Add(scheduleE.Station);
+                }
+                
                 if((now > scheduleE.StartTime) && (now < scheduleE.EndTime))
                 {
                     onAirEntries.Add(scheduleE);
@@ -93,7 +109,7 @@ namespace SWLogger
                 }
                 
             }
-            
+            stationName.Sort();
         }
 
         private void Exit_Click(object sender, RoutedEventArgs e)
@@ -122,6 +138,11 @@ namespace SWLogger
             }
             catch (Exception) { }
         }       
+        private void OnAirGrid_DoubleClick(object sender, RoutedEventArgs e)
+        {
+            hitIndex = OnAirGrid.SelectedIndex;
+            Populate_Click(sender, e);
+        }
 
         private void QuickAdd_Click(object sender, RoutedEventArgs e)
         {
@@ -135,6 +156,11 @@ namespace SWLogger
             LanguageText.Content = onAirEntries[hitIndex].Language;
             BroadcastText.Content = onAirEntries[hitIndex].BroadcastTime;
             TimeText.Content = new TimeSpan(UTC.Hour, UTC.Minute, UTC.Second).ToString(); ;
+        }
+
+        private void StationSearch_Click(object sender, RoutedEventArgs e)
+        {
+            OnAirGrid.Items.Clear();
         }
     }
     public static class Extensions
