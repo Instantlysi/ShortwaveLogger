@@ -87,8 +87,7 @@ namespace SWLogger
                 if (dupe != true)
                 {
                     languages.Add(scheduleE.Language);
-                }
-                
+                }                
             }
 
             stationName.Sort();
@@ -164,27 +163,29 @@ namespace SWLogger
                         switch (stationS)
                         {
                             case true:
+                                if (StationBox.Text == entry.Station)
+                                {
+                                    onAirEntries.Add(entry);
+                                    OnAirGrid.Items.Add(entry);
+                                    break;
+                                }
+
                                 if (StationBox.Text == "")
                                 {
                                     onAirEntries.Add(entry);
                                     OnAirGrid.Items.Add(entry);
                                 }
-                                else if (StationBox.Text == entry.Station)
-                                {
-                                    onAirEntries.Add(entry);
-                                    OnAirGrid.Items.Add(entry);
-                                }
                                 break;
+
                             case false:
                                 if (FreqBox.Text == entry.Frequency)
                                 {
                                     onAirEntries.Add(entry);
                                     OnAirGrid.Items.Add(entry);
+                                    break;
                                 }
                                 break;
-                        }
-
-                        
+                        }                        
                     }
                 }
             }
@@ -243,6 +244,7 @@ namespace SWLogger
         private void StationSearch_Click(object sender, RoutedEventArgs e)
         {
             OnAirGrid.Items.Clear();
+            stationS = true;
             onAirEntries.Clear();
             DrawLive();
         }
