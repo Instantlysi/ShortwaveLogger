@@ -31,5 +31,11 @@ namespace SWLogger
             FilePath.Text = dataPath;
             HistoryFile.Text = historyPath;
         }
+
+        private void SettingsSave_Click(object sender, RoutedEventArgs e)
+        {
+            dataPath = FilePath.Text;
+            historyPath = HistoryFile.Text;
+        }
     }
 }

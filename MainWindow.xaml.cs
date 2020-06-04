@@ -43,8 +43,6 @@ namespace SWLogger
         {
             InitializeComponent();
 
-            
-
             dispatcherTimer.Tick += new EventHandler(dispatcherTimer_Tick);
             dispatcherTimer.Interval = TimeSpan.FromMilliseconds(200);
             dispatcherTimer.Start();
@@ -109,11 +107,6 @@ namespace SWLogger
             ClockUTC.Content = UTC.TimeOfDay.ToString();
         }
 
-        private void OnAirGrid_MouseClick(object sender, MouseEventArgs e)
-        {
-            
-        }
-
         protected override void OnClosed(EventArgs e)
         {
             base.OnClosed(e);
@@ -161,8 +154,7 @@ namespace SWLogger
                         }                        
                     }
                 }
-            }
-            
+            }            
         }
 
         private void Exit_Click(object sender, RoutedEventArgs e)
