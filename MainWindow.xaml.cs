@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.IO;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
@@ -23,12 +24,36 @@ namespace SWLogger
         SettingsWindow settingsWindow = new SettingsWindow();
         string dataPath;
         string historyPath;
-
+        Schedule scheduleE;
+        List<Schedule> schEntries = new List<Schedule>();
         public MainWindow()
         {
             InitializeComponent();
+            
             dataPath = settingsWindow.dataPath;
             historyPath = settingsWindow.historyPath;
+            DrawLive();
+        }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            base.OnClosed(e);
+
+            Application.Current.Shutdown();
+        }
+
+        private void DrawLive()
+        {
+            string[] schedEntry = File.ReadAllLines(dataPath);
+            
+            foreach (string entry in schedEntry)
+            {
+                string[] split = entry.Split(';');
+                scheduleE = new Schedule(split);
+                schEntries.Add(scheduleE);
+                OnAirGrid.Items.Add(scheduleE);
+            }
+            
         }
 
         private void Exit_Click(object sender, RoutedEventArgs e)

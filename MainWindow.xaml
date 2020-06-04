@@ -5,8 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SWLogger"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="658" Width="1014">
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
         <DockPanel>
             <Menu DockPanel.Dock="Top">
                 <MenuItem Header="_File">
@@ -16,7 +19,16 @@
                     <MenuItem Header="_Settings" Click="Settings_Click"/>
                 </MenuItem>
             </Menu>
-            <TextBox AcceptsReturn="True" />
         </DockPanel>
+        <DataGrid x:Name="OnAirGrid" Height="587" Margin="482,30,10,0" VerticalAlignment="Top">
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding Frequency}" ClipboardContentBinding="{x:Null}" Header="Frequency"/>
+                <DataGridTextColumn Binding="{Binding Station}" ClipboardContentBinding="{x:Null}" Header="Station"/>
+                <DataGridTextColumn Binding="{Binding Country}" ClipboardContentBinding="{x:Null}" Header="Country"/>
+                <DataGridTextColumn Binding="{Binding Language}" ClipboardContentBinding="{x:Null}" Header="Language"/>
+                <DataGridTextColumn Binding="{Binding BroadcastTime}" ClipboardContentBinding="{x:Null}" Header="BroadcastTime"/>
+                <DataGridTextColumn Binding="{Binding Days}" ClipboardContentBinding="{x:Null}" Header="Days"/>
+            </DataGrid.Columns>
+        </DataGrid>
     </Grid>
 </Window>
