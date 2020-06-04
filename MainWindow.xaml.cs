@@ -34,6 +34,7 @@ namespace SWLogger
         string historyPath;
         string[] schedEntry;
         string language = "";
+        string stationText = "";
         int hitIndex = 0;
         bool stationS = true;
         DateTime UTC = DateTime.UtcNow;
@@ -87,18 +88,18 @@ namespace SWLogger
                 if (dupe != true)
                 {
                     languages.Add(scheduleE.Language);
-                }                
+                }
             }
 
             stationName.Sort();
             languages.Sort();
             LanguageCombo.ItemsSource = languages;
             LanguageCombo.SelectedIndex = 12;
-            DrawLive();
         }
 
         private void minuteTick_Tick(object sender, EventArgs e)
         {
+            OnAirGrid.Items.Clear();
             DrawLive();
         }
 
@@ -127,34 +128,6 @@ namespace SWLogger
             
             foreach (Schedule entry in schEntries)
             {
-                /*
-                bool dupe = false;
-                for (int i = 0; i < stationName.Count; i++)
-                {
-                    if (stationName[i] == entry.Station)
-                    {
-                        dupe = true;
-                    }
-                }
-
-                if (dupe != true)
-                {
-                    stationName.Add(entry.Station);
-                }
-                dupe = false;
-                for (int i = 0; i < languages.Count; i++)
-                {
-                    if (languages[i] == entry.Language)
-                    {
-                        dupe = true;
-                    }
-                }
-                
-                if (dupe != true)
-                {
-                    languages.Add(entry.Language);
-                }
-                */
 
                 if ((now > entry.StartTime) && (now < entry.EndTime))
                 {
@@ -163,14 +136,14 @@ namespace SWLogger
                         switch (stationS)
                         {
                             case true:
-                                if (StationBox.Text == entry.Station)
+                                if (stationText == entry.Station)
                                 {
                                     onAirEntries.Add(entry);
                                     OnAirGrid.Items.Add(entry);
                                     break;
                                 }
 
-                                if (StationBox.Text == "")
+                                if (stationText == "")
                                 {
                                     onAirEntries.Add(entry);
                                     OnAirGrid.Items.Add(entry);
@@ -190,8 +163,6 @@ namespace SWLogger
                 }
             }
             
-            //languages[0] = "All";
-            
         }
 
         private void Exit_Click(object sender, RoutedEventArgs e)
@@ -208,8 +179,6 @@ namespace SWLogger
         {
             ContextMenu m = new ContextMenu();
             m = RightClickMenu;
-            //m.Items.Add("");
-            //m.Items.Add("Populate list");
             m.IsOpen = true;
 
             HitTestResult hitTestResult = VisualTreeHelper.HitTest(OnAirGrid, e.GetPosition(OnAirGrid));
@@ -243,6 +212,7 @@ namespace SWLogger
 
         private void StationSearch_Click(object sender, RoutedEventArgs e)
         {
+            stationText = StationBox.Text;
             OnAirGrid.Items.Clear();
             stationS = true;
             onAirEntries.Clear();
@@ -264,6 +234,17 @@ namespace SWLogger
             OnAirGrid.Items.Clear();
             onAirEntries.Clear();
             DrawLive();
+        }
+
+        private void reset_Click(object sender, RoutedEventArgs e)
+        {
+            FreqBox.Text = "";
+            StationBox.Text = "";
+            CountryText.Content = "";
+            LanguageText.Content = "";
+            BroadcastText.Content = "";
+            stationText = "";
+            StationSearch_Click(sender, e);
         }
     }
     public static class Extensions
