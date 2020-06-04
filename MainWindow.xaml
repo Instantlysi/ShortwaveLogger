@@ -10,8 +10,8 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <DockPanel>
-            <Menu DockPanel.Dock="Top">
+        <DockPanel Margin="0,0,0,606">
+            <Menu DockPanel.Dock="Top" Height="21" VerticalAlignment="Top">
                 <MenuItem Header="_File">
                     <MenuItem Header="_Exit" Click="Exit_Click" />
                 </MenuItem>
@@ -20,15 +20,24 @@
                 </MenuItem>
             </Menu>
         </DockPanel>
-        <DataGrid x:Name="OnAirGrid" Height="587" Margin="482,30,10,0" VerticalAlignment="Top">
-            <DataGrid.Columns>
-                <DataGridTextColumn Binding="{Binding Frequency}" ClipboardContentBinding="{x:Null}" Header="Frequency"/>
-                <DataGridTextColumn Binding="{Binding Station}" ClipboardContentBinding="{x:Null}" Header="Station"/>
-                <DataGridTextColumn Binding="{Binding Country}" ClipboardContentBinding="{x:Null}" Header="Country"/>
-                <DataGridTextColumn Binding="{Binding Language}" ClipboardContentBinding="{x:Null}" Header="Language"/>
-                <DataGridTextColumn Binding="{Binding BroadcastTime}" ClipboardContentBinding="{x:Null}" Header="BroadcastTime"/>
-                <DataGridTextColumn Binding="{Binding Days}" ClipboardContentBinding="{x:Null}" Header="Days"/>
-            </DataGrid.Columns>
-        </DataGrid>
+        <GroupBox Header="Stations On Air" Margin="0,26,10,10" HorizontalAlignment="Right" Width="511">
+            <DataGrid x:Name="OnAirGrid" Margin="10,10,-2,-4" MouseRightButtonUp="OnAirGrid_MouseRightButtonUp">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Binding="{Binding Frequency}" ClipboardContentBinding="{x:Null}" Header="Frequency" IsReadOnly="True"/>
+                    <DataGridTextColumn Binding="{Binding Station}" ClipboardContentBinding="{x:Null}" Header="Station" IsReadOnly="True"/>
+                    <DataGridTextColumn Binding="{Binding Country}" ClipboardContentBinding="{x:Null}" Header="Country" IsReadOnly="True"/>
+                    <DataGridTextColumn Binding="{Binding Language}" ClipboardContentBinding="{x:Null}" Header="Language" IsReadOnly="True"/>
+                    <DataGridTextColumn Binding="{Binding BroadcastTime}" ClipboardContentBinding="{x:Null}" Header="BroadcastTime" IsReadOnly="True"/>
+                    <DataGridTextColumn Binding="{Binding Days}" ClipboardContentBinding="{x:Null}" Header="Days" IsReadOnly="True"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </GroupBox>
+        <Rectangle Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="36" Margin="10,31,0,0" Stroke="Black" VerticalAlignment="Top" Width="155"/>
+        <Label x:Name="ClockUTC" Content="00:00:00" HorizontalAlignment="Left" Margin="10,26,0,0" VerticalAlignment="Top" Height="44" Width="98" FontSize="24"/>
+        <Label x:Name="ClockUTC_Copy" Content="UTC" HorizontalAlignment="Left" Margin="108,26,0,0" VerticalAlignment="Top" Height="44" Width="77" FontSize="24"/>
+        <Label Content="Frequency" HorizontalAlignment="Left" Margin="10,120,0,0" VerticalAlignment="Top"/>
+        <Label Content="Station" HorizontalAlignment="Left" Margin="10,146,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="FreqBox" HorizontalAlignment="Left" Height="23" Margin="108,124,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="214"/>
+        <TextBox x:Name="StationBox" HorizontalAlignment="Left" Height="23" Margin="108,150,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="214"/>
     </Grid>
 </Window>
