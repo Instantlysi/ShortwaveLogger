@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.IO;
+using System.Net;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
@@ -22,7 +23,8 @@ namespace SWLogger
     /// </summary>
     public partial class MainWindow : Window
     {
-        SettingsWindow settingsWindow = new SettingsWindow();        
+        SettingsWindow settingsWindow = new SettingsWindow();
+        Downloading d = new Downloading();
         Schedule scheduleE;
         List<Schedule> schEntries = new List<Schedule>();
         List<Schedule> onAirEntries = new List<Schedule>();
@@ -41,9 +43,16 @@ namespace SWLogger
         DateTime UTC = DateTime.UtcNow;
         TimeSpan CurrentTime = new TimeSpan(0, 0, 0);
 
+        string uri = "http://www.eibispace.de/dx/";
+        string file = "sked-a20.csv";
+        WebClient client = new WebClient();
+
         public MainWindow()
         {
             InitializeComponent();
+
+            string WebResource = uri + file;
+
 
             dispatcherTimer.Tick += new EventHandler(dispatcherTimer_Tick);
             dispatcherTimer.Interval = TimeSpan.FromMilliseconds(200);
@@ -55,8 +64,31 @@ namespace SWLogger
 
             dataPath = settingsWindow.dataPath;
             historyPath = settingsWindow.historyPath;
-            schedEntry = File.ReadAllLines(dataPath);
+
+
+            try
+            {
+                d.status.Text = string.Format("Looking for schedule file...");
+                schedEntry = File.ReadAllLines(dataPath);
+                d.Show();
+                d.status.Text = string.Format("Sorting schedule file...");
+                d.Close();
+                SortDataFile();
+            }
+            catch (FileNotFoundException)
+            {
+                d.status.Text = string.Format("Schedule file not foud!");
+                d.Show();
+                d.status.Text = string.Format("Downloading data file {0} from {1}...", file, uri);
+                client.DownloadFile(new Uri(WebResource), dataPath);
+                d.status.Text = string.Format("Successfully downloaded file {0} from {1}...", file, uri);
+                schedEntry = File.ReadAllLines(dataPath);
+                d.status.Text = string.Format("Sorting schedule file...");
+                d.Close();
+                SortDataFile();
+            }
             StationBox.ItemsSource = stationName;
+
 
             foreach (string entry in schedEntry)
             {
@@ -109,9 +141,6 @@ namespace SWLogger
 
                 HistoryGrid.Items.Add(newContact);
             }
-
-            
-            
         }
 
         private void minuteTick_Tick(object sender, EventArgs e)
@@ -320,7 +349,13 @@ namespace SWLogger
             FreqSearch.IsDefault = false;
             submit.IsDefault = true;
         }
-    }
+
+        private void SortDataFile()
+        {
+            schedEntry = schedEntry.Skip(1).ToArray();
+        }
+    }    
+
     public static class Extensions
     {
         public static T GetParentOfType<T>(this DependencyObject element) where T : DependencyObject
