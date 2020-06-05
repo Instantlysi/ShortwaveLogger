@@ -39,6 +39,7 @@ namespace SWLogger
         int hitIndex = 0;
         bool stationS = true;
         DateTime UTC = DateTime.UtcNow;
+        TimeSpan CurrentTime = new TimeSpan(0, 0, 0);
 
         public MainWindow()
         {
@@ -94,6 +95,23 @@ namespace SWLogger
             languages.Sort();
             LanguageCombo.ItemsSource = languages;
             LanguageCombo.SelectedIndex = 12;
+            
+            UpdateHistory();
+        }
+        private void UpdateHistory()
+        {
+            HistoryGrid.Items.Clear();
+            string[] loadHistory = File.ReadAllLines(historyPath);
+            foreach (string entry in loadHistory)
+            {
+                string[] split = entry.Split('|');
+                Contact newContact = new Contact(split, bool.Parse(split[7]), DateTime.Parse(split[split.Length - 1]),"Updating");
+
+                HistoryGrid.Items.Add(newContact);
+            }
+
+            
+            
         }
 
         private void minuteTick_Tick(object sender, EventArgs e)
@@ -105,6 +123,7 @@ namespace SWLogger
         private void dispatcherTimer_Tick(object sender, EventArgs e)
         {
             UTC = DateTime.UtcNow;
+            CurrentTime = new TimeSpan(UTC.Hour, UTC.Minute, UTC.Second);
             ClockUTC.Content = UTC.TimeOfDay.ToString();
         }
 
@@ -191,7 +210,26 @@ namespace SWLogger
 
         private void QuickAdd_Click(object sender, RoutedEventArgs e)
         {
+            
+            Schedule quickContact = onAirEntries[hitIndex];
 
+            string[] contact = new string[] { quickContact.Frequency, quickContact.Station, quickContact.Country, quickContact.Language, quickContact.BroadcastTime, "", CurrentTime.ToString() };
+            Contact newContact = new Contact(contact, WebSDRCheck.IsChecked, DateTime.Today.Date);
+            historyList.Add(newContact);
+            string writeable = ("{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}|{8}\n");
+
+            File.AppendAllText(historyPath, string.Format(writeable,
+                newContact.Frequency,
+                newContact.Station,
+                newContact.Country,
+                newContact.Language,
+                newContact.TimeHeard,
+                newContact.Broadcast,
+                newContact.Notes,
+                newContact.WebSDR,
+                newContact.Date));
+
+            UpdateHistory();
         }
         private void Populate_Click(object sender, RoutedEventArgs e)
         {
@@ -245,9 +283,9 @@ namespace SWLogger
         private void OnSubmit(object sender, RoutedEventArgs e)
         {            
             string[] contact = new string[] { FreqBox.Text, StationBox.Text, CountryText.Content.ToString(), LanguageText.Content.ToString(), BroadcastText.Content.ToString(), NotesBox.Text, TimeText.Content.ToString() };
-            Contact newContact = new Contact(contact, WebSDRCheck.IsChecked);
+            Contact newContact = new Contact(contact, WebSDRCheck.IsChecked, DateTime.Today.Date);
             historyList.Add(newContact);
-            string writeable = ("{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}");
+            string writeable = ("{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}|{8}\n");
             
             File.AppendAllText(historyPath, string.Format(writeable, 
                 newContact.Frequency, 
@@ -257,19 +295,30 @@ namespace SWLogger
                 newContact.TimeHeard, 
                 newContact.Broadcast, 
                 newContact.Notes, 
-                newContact.WebSDR));
+                newContact.WebSDR,
+                newContact.Date));
+            UpdateHistory();
         }
 
             private void StationBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             StationSearch.IsDefault = true;
             FreqSearch.IsDefault = false;
+            submit.IsDefault = false;
         }
 
         private void FreqBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             StationSearch.IsDefault = false;
             FreqSearch.IsDefault = true;
+            submit.IsDefault = false;
+        }
+
+        private void NotesBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            StationSearch.IsDefault = false;
+            FreqSearch.IsDefault = false;
+            submit.IsDefault = true;
         }
     }
     public static class Extensions
