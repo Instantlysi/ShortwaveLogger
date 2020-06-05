@@ -50,16 +50,16 @@
         <Label x:Name="ClockUTC_Copy" Content="UTC" HorizontalAlignment="Left" Margin="108,26,0,0" VerticalAlignment="Top" Height="44" Width="77" FontSize="24"/>
         <Label Content="Frequency:" HorizontalAlignment="Left" Margin="10,79,0,0" VerticalAlignment="Top" Height="26" Width="67"/>
         <Label Content="Station:" HorizontalAlignment="Left" Margin="10,105,0,0" VerticalAlignment="Top" Height="26" Width="50"/>
-        <TextBox x:Name="FreqBox" Height="23" Margin="108,83,139,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-        <dotNetKitControls:AutoCompleteComboBox x:Name="StationBox" Height="23" Margin="108,108,139,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="FreqBox" Height="23" Margin="108,83,139,0" TextWrapping="Wrap" VerticalAlignment="Top" TextChanged="FreqBox_TextChanged"/>
+        <dotNetKitControls:AutoCompleteComboBox x:Name="StationBox" Height="23" Margin="108,108,139,0" VerticalAlignment="Top" SelectionChanged="StationBox_SelectionChanged"/>
         <Label Content="Country:" HorizontalAlignment="Left" Margin="10,131,0,0" VerticalAlignment="Top" Height="26" Width="55"/>
         <Label Content="Language:" HorizontalAlignment="Left" Margin="10,157,0,0" VerticalAlignment="Top" Height="26" Width="64"/>
         <Label Content="Time Heard:" HorizontalAlignment="Left" Margin="10,183,0,0" VerticalAlignment="Top" Height="26" Width="74"/>
         <Label Content="Broadcast:" HorizontalAlignment="Left" Margin="10,209,0,0" VerticalAlignment="Top" Height="26" Width="65"/>
-        <Label x:Name="CountryText" Content="Label" HorizontalAlignment="Left" Margin="108,131,0,0" VerticalAlignment="Top" Height="26" Width="214"/>
-        <Label x:Name="LanguageText" Content="Label" HorizontalAlignment="Left" Margin="108,157,0,0" VerticalAlignment="Top" Height="26" Width="214"/>
-        <Label x:Name="TimeText" Content="Label" HorizontalAlignment="Left" Margin="108,183,0,0" VerticalAlignment="Top" Height="26" Width="214"/>
-        <Label x:Name="BroadcastText" Content="Label" HorizontalAlignment="Left" Margin="108,209,0,0" VerticalAlignment="Top" Height="26" Width="214"/>
+        <Label x:Name="CountryText" Content="" HorizontalAlignment="Left" Margin="108,131,0,0" VerticalAlignment="Top" Height="26" Width="214"/>
+        <Label x:Name="LanguageText" Content="" HorizontalAlignment="Left" Margin="108,157,0,0" VerticalAlignment="Top" Height="26" Width="214"/>
+        <Label x:Name="TimeText" Content="" HorizontalAlignment="Left" Margin="108,183,0,0" VerticalAlignment="Top" Height="26" Width="214"/>
+        <Label x:Name="BroadcastText" Content="" HorizontalAlignment="Left" Margin="108,209,0,0" VerticalAlignment="Top" Height="26" Width="214"/>
         <Label Content="Notes:" HorizontalAlignment="Left" Margin="10,235,0,0" VerticalAlignment="Top" Height="26" Width="44"/>
         <TextBox x:Name="NotesBox" Height="157" Margin="108,239,139,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
         <Button x:Name="FreqSearch" Content="Search" Margin="0,85,53,0" VerticalAlignment="Top" Click="FreqSearch_Click" Height="20" HorizontalAlignment="Right" Width="74"/>
@@ -68,6 +68,6 @@
         <ComboBox x:Name="LanguageCombo" Margin="408,26,19,0" VerticalAlignment="Top" SelectionChanged="LanguageCombo_SelectionChanged" Grid.Column="1" Height="22"/>
         <Label Content="Language:" Margin="344,22,139,0" VerticalAlignment="Top" Grid.Column="1" Height="26"/>
         <Button x:Name="reset" Content="Reset" HorizontalAlignment="Left" Margin="43,23,0,0" VerticalAlignment="Top" Width="75" Grid.Column="1" Click="reset_Click"/>
-        <Button x:Name="submit" Content="Submit" Margin="0,376,38,0" VerticalAlignment="Top" FontWeight="Bold" HorizontalAlignment="Right" Width="75"/>
+        <Button x:Name="submit" Content="Submit" Click="OnSubmit" Margin="0,376,38,0" VerticalAlignment="Top" FontWeight="Bold" HorizontalAlignment="Right" Width="75"/>
     </Grid>
 </Window>

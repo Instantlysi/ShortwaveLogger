@@ -26,6 +26,7 @@ namespace SWLogger
         Schedule scheduleE;
         List<Schedule> schEntries = new List<Schedule>();
         List<Schedule> onAirEntries = new List<Schedule>();
+        List<Contact> historyList = new List<Contact>();
         List<string> stationName = new List<string>();
         List<string> languages = new List<string> { "All" };
         DispatcherTimer dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
@@ -236,7 +237,39 @@ namespace SWLogger
             LanguageText.Content = "";
             BroadcastText.Content = "";
             stationText = "";
+            NotesBox.Text = "";
+            WebSDRCheck.IsChecked = false;
             StationSearch_Click(sender, e);
+        }
+
+        private void OnSubmit(object sender, RoutedEventArgs e)
+        {            
+            string[] contact = new string[] { FreqBox.Text, StationBox.Text, CountryText.Content.ToString(), LanguageText.Content.ToString(), BroadcastText.Content.ToString(), NotesBox.Text, TimeText.Content.ToString() };
+            Contact newContact = new Contact(contact, WebSDRCheck.IsChecked);
+            historyList.Add(newContact);
+            string writeable = ("{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}");
+            
+            File.AppendAllText(historyPath, string.Format(writeable, 
+                newContact.Frequency, 
+                newContact.Station, 
+                newContact.Country, 
+                newContact.Language, 
+                newContact.TimeHeard, 
+                newContact.Broadcast, 
+                newContact.Notes, 
+                newContact.WebSDR));
+        }
+
+            private void StationBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            StationSearch.IsDefault = true;
+            FreqSearch.IsDefault = false;
+        }
+
+        private void FreqBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            StationSearch.IsDefault = false;
+            FreqSearch.IsDefault = true;
         }
     }
     public static class Extensions
