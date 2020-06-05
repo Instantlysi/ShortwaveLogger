@@ -17,7 +17,7 @@ namespace SWLogger
         public string Country { get; }
         public string Language { get; }
         public string Days { get; }
-              
+        
         public Schedule()
         {
             Frequency = "";

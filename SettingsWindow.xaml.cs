@@ -26,10 +26,16 @@ namespace SWLogger
         public SettingsWindow()
         {
             InitializeComponent();
-            dataPath = path + @"\sked-a20.csv";
-            historyPath = path + @"\History.txt";
+            dataPath = path + @"\Data\sked-a20.csv";
+            historyPath = path + @"\Data\History.txt";
             FilePath.Text = dataPath;
             HistoryFile.Text = historyPath;
+        }
+
+        private void SettingsSave_Click(object sender, RoutedEventArgs e)
+        {
+            dataPath = FilePath.Text;
+            historyPath = HistoryFile.Text;
         }
     }
 }

@@ -26,20 +26,24 @@ namespace SWLogger
         Schedule scheduleE;
         List<Schedule> schEntries = new List<Schedule>();
         List<Schedule> onAirEntries = new List<Schedule>();
+        List<Contact> historyList = new List<Contact>();
         List<string> stationName = new List<string>();
+        List<string> languages = new List<string> { "All" };
         DispatcherTimer dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
         DispatcherTimer minuteTick = new System.Windows.Threading.DispatcherTimer();
         string dataPath;
         string historyPath;
         string[] schedEntry;
-
+        string language = "";
+        string stationText = "";
         int hitIndex = 0;
+        bool stationS = true;
         DateTime UTC = DateTime.UtcNow;
+        TimeSpan CurrentTime = new TimeSpan(0, 0, 0);
+
         public MainWindow()
         {
             InitializeComponent();
-
-            
 
             dispatcherTimer.Tick += new EventHandler(dispatcherTimer_Tick);
             dispatcherTimer.Interval = TimeSpan.FromMilliseconds(200);
@@ -53,23 +57,74 @@ namespace SWLogger
             historyPath = settingsWindow.historyPath;
             schedEntry = File.ReadAllLines(dataPath);
             StationBox.ItemsSource = stationName;
-            DrawLive();
+
+            foreach (string entry in schedEntry)
+            {
+                string[] split = entry.Split(';');
+                scheduleE = new Schedule(split);
+                schEntries.Add(scheduleE);
+                
+                bool dupe = false;
+                
+                for (int i = 0; i < stationName.Count; i++)
+                {
+                    if (scheduleE.Station == stationName[i])
+                    {
+                        dupe = true;
+                    }
+                }
+                if (dupe != true)
+                {
+                    stationName.Add(scheduleE.Station);
+                }
+                dupe = false;
+                for (int i = 0; i < languages.Count; i++)
+                {
+                    if (languages[i] == scheduleE.Language)
+                    {
+                        dupe = true;
+                    }
+                }
+                if (dupe != true)
+                {
+                    languages.Add(scheduleE.Language);
+                }
+            }
+
+            stationName.Sort();
+            languages.Sort();
+            LanguageCombo.ItemsSource = languages;
+            LanguageCombo.SelectedIndex = 12;
+            
+            UpdateHistory();
+        }
+        private void UpdateHistory()
+        {
+            HistoryGrid.Items.Clear();
+            string[] loadHistory = File.ReadAllLines(historyPath);
+            foreach (string entry in loadHistory)
+            {
+                string[] split = entry.Split('|');
+                Contact newContact = new Contact(split, bool.Parse(split[7]), DateTime.Parse(split[split.Length - 1]),"Updating");
+
+                HistoryGrid.Items.Add(newContact);
+            }
+
+            
+            
         }
 
         private void minuteTick_Tick(object sender, EventArgs e)
         {
+            OnAirGrid.Items.Clear();
             DrawLive();
         }
 
         private void dispatcherTimer_Tick(object sender, EventArgs e)
         {
             UTC = DateTime.UtcNow;
+            CurrentTime = new TimeSpan(UTC.Hour, UTC.Minute, UTC.Second);
             ClockUTC.Content = UTC.TimeOfDay.ToString();
-        }
-
-        private void OnAirGrid_MouseClick(object sender, MouseEventArgs e)
-        {
-            
         }
 
         protected override void OnClosed(EventArgs e)
@@ -83,33 +138,43 @@ namespace SWLogger
         {
             
             TimeSpan now = UTC.TimeOfDay;
-            foreach (string entry in schedEntry)
-            {                
-                string[] split = entry.Split(';');
-                scheduleE = new Schedule(split);
-                schEntries.Add(scheduleE);
-                bool dupe = false;
-                for (int i = 0; i < stationName.Count; i++)
+            
+            foreach (Schedule entry in schEntries)
+            {
+
+                if ((now > entry.StartTime) && (now < entry.EndTime))
                 {
-                    if (stationName[i] == scheduleE.Station)
+                    if (language == entry.Language || language == "All" || language == "")
                     {
-                        dupe = true;
+                        switch (stationS)
+                        {
+                            case true:
+                                if (stationText == entry.Station)
+                                {
+                                    onAirEntries.Add(entry);
+                                    OnAirGrid.Items.Add(entry);
+                                    break;
+                                }
+
+                                if (stationText == "")
+                                {
+                                    onAirEntries.Add(entry);
+                                    OnAirGrid.Items.Add(entry);
+                                }
+                                break;
+
+                            case false:
+                                if (FreqBox.Text == entry.Frequency)
+                                {
+                                    onAirEntries.Add(entry);
+                                    OnAirGrid.Items.Add(entry);
+                                    break;
+                                }
+                                break;
+                        }                        
                     }
                 }
-
-                if (dupe != true)
-                {
-                    stationName.Add(scheduleE.Station);
-                }
-                
-                if((now > scheduleE.StartTime) && (now < scheduleE.EndTime))
-                {
-                    onAirEntries.Add(scheduleE);
-                    OnAirGrid.Items.Add(scheduleE);
-                }
-                
-            }
-            stationName.Sort();
+            }            
         }
 
         private void Exit_Click(object sender, RoutedEventArgs e)
@@ -126,8 +191,6 @@ namespace SWLogger
         {
             ContextMenu m = new ContextMenu();
             m = RightClickMenu;
-            //m.Items.Add("");
-            //m.Items.Add("Populate list");
             m.IsOpen = true;
 
             HitTestResult hitTestResult = VisualTreeHelper.HitTest(OnAirGrid, e.GetPosition(OnAirGrid));
@@ -141,12 +204,32 @@ namespace SWLogger
         private void OnAirGrid_DoubleClick(object sender, RoutedEventArgs e)
         {
             hitIndex = OnAirGrid.SelectedIndex;
+            
             Populate_Click(sender, e);
         }
 
         private void QuickAdd_Click(object sender, RoutedEventArgs e)
         {
+            
+            Schedule quickContact = onAirEntries[hitIndex];
 
+            string[] contact = new string[] { quickContact.Frequency, quickContact.Station, quickContact.Country, quickContact.Language, quickContact.BroadcastTime, "", CurrentTime.ToString() };
+            Contact newContact = new Contact(contact, WebSDRCheck.IsChecked, DateTime.Today.Date);
+            historyList.Add(newContact);
+            string writeable = ("{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}|{8}\n");
+
+            File.AppendAllText(historyPath, string.Format(writeable,
+                newContact.Frequency,
+                newContact.Station,
+                newContact.Country,
+                newContact.Language,
+                newContact.TimeHeard,
+                newContact.Broadcast,
+                newContact.Notes,
+                newContact.WebSDR,
+                newContact.Date));
+
+            UpdateHistory();
         }
         private void Populate_Click(object sender, RoutedEventArgs e)
         {
@@ -160,7 +243,82 @@ namespace SWLogger
 
         private void StationSearch_Click(object sender, RoutedEventArgs e)
         {
+            stationText = StationBox.Text;
             OnAirGrid.Items.Clear();
+            stationS = true;
+            onAirEntries.Clear();
+            DrawLive();
+        }
+
+        private void LanguageCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            language = LanguageCombo.SelectedItem.ToString();
+            OnAirGrid.Items.Clear();
+            onAirEntries.Clear();
+            DrawLive();
+        }
+
+        private void FreqSearch_Click(object sender, RoutedEventArgs e)
+        {
+            language = LanguageCombo.SelectedItem.ToString();
+            stationS = false;
+            OnAirGrid.Items.Clear();
+            onAirEntries.Clear();
+            DrawLive();
+        }
+
+        private void reset_Click(object sender, RoutedEventArgs e)
+        {
+            FreqBox.Text = "";
+            StationBox.Text = "";
+            CountryText.Content = "";
+            LanguageText.Content = "";
+            BroadcastText.Content = "";
+            stationText = "";
+            NotesBox.Text = "";
+            WebSDRCheck.IsChecked = false;
+            StationSearch_Click(sender, e);
+        }
+
+        private void OnSubmit(object sender, RoutedEventArgs e)
+        {            
+            string[] contact = new string[] { FreqBox.Text, StationBox.Text, CountryText.Content.ToString(), LanguageText.Content.ToString(), BroadcastText.Content.ToString(), NotesBox.Text, TimeText.Content.ToString() };
+            Contact newContact = new Contact(contact, WebSDRCheck.IsChecked, DateTime.Today.Date);
+            historyList.Add(newContact);
+            string writeable = ("{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}|{8}\n");
+            
+            File.AppendAllText(historyPath, string.Format(writeable, 
+                newContact.Frequency, 
+                newContact.Station, 
+                newContact.Country, 
+                newContact.Language, 
+                newContact.TimeHeard, 
+                newContact.Broadcast, 
+                newContact.Notes, 
+                newContact.WebSDR,
+                newContact.Date));
+            UpdateHistory();
+        }
+
+            private void StationBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            StationSearch.IsDefault = true;
+            FreqSearch.IsDefault = false;
+            submit.IsDefault = false;
+        }
+
+        private void FreqBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            StationSearch.IsDefault = false;
+            FreqSearch.IsDefault = true;
+            submit.IsDefault = false;
+        }
+
+        private void NotesBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            StationSearch.IsDefault = false;
+            FreqSearch.IsDefault = false;
+            submit.IsDefault = true;
         }
     }
     public static class Extensions

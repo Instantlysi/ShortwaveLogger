@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SWLogger"
         mc:Ignorable="d"
-        Title="Settings" Height="383.934" Width="503.56" ResizeMode="CanMinimize">
+        Title="Settings" Height="141.934" Width="503.56" ResizeMode="CanMinimize">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
@@ -14,6 +14,7 @@
         <TextBox x:Name="FilePath" HorizontalAlignment="Left" Height="23" Margin="71,14,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="415"/>
         <Label x:Name="TextHistFile" Content="History File" HorizontalAlignment="Left" Margin="10,42,0,0" VerticalAlignment="Top" Width="74"/>
         <TextBox x:Name="HistoryFile" HorizontalAlignment="Left" Height="23" Margin="89,45,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="397"/>
+        <Button x:Name="SettingsSave" Content="Save" HorizontalAlignment="Left" Margin="411,88,0,0" VerticalAlignment="Top" Width="75" IsDefault="True" Click="SettingsSave_Click"/>
 
     </Grid>
 </Window>

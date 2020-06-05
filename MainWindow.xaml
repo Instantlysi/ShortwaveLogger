@@ -6,12 +6,18 @@
         xmlns:dotNetKitControls="clr-namespace:DotNetKit.Windows.Controls;assembly=DotNetKit.Wpf.AutoCompleteComboBox"
         xmlns:local="clr-namespace:SWLogger"
         mc:Ignorable="d"
-        Title="MainWindow" Height="658" Width="1014">
+        Title="MainWindow" Height="707.5" Width="1016" MinWidth="1016" MinHeight="707.5">
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="420*" MaxHeight="420"/>
+            <RowDefinition Height="257*"/>
+        </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
+            <ColumnDefinition Width="461*"/>
+            <ColumnDefinition Width="547*"/>
         </Grid.ColumnDefinitions>
-        <DockPanel Margin="0,0,0,606">
+        <Rectangle Fill="#FFF4F4F5" Margin="10,80,19,3" Stroke="Black"/>
+        <DockPanel Margin="0,0,0,358" Grid.ColumnSpan="2">
             <Menu DockPanel.Dock="Top" Height="21" VerticalAlignment="Top">
                 <MenuItem Header="_File">
                     <MenuItem Header="_Exit" Click="Exit_Click" />
@@ -21,7 +27,7 @@
                 </MenuItem>
             </Menu>
         </DockPanel>
-        <GroupBox Header="Stations On Air" Margin="0,26,10,10" HorizontalAlignment="Right" Width="511">
+        <GroupBox Header="Stations On Air" Margin="10,48,10,10" Grid.Column="1" Grid.RowSpan="2">
             <DataGrid x:Name="OnAirGrid" Margin="10,10,-2,-4" MouseRightButtonUp="OnAirGrid_MouseRightButtonUp" MouseDoubleClick="OnAirGrid_DoubleClick">
                 <DataGrid.Columns>
                     <DataGridTextColumn Binding="{Binding Frequency}" ClipboardContentBinding="{x:Null}" Header="Frequency" IsReadOnly="True" CanUserSort="False"/>
@@ -32,7 +38,7 @@
                     <DataGridTextColumn Binding="{Binding Days}" ClipboardContentBinding="{x:Null}" Header="Days" IsReadOnly="True" CanUserSort="False"/>
                 </DataGrid.Columns>
                 <DataGrid.ContextMenu>
-                    <ContextMenu Name="RightClickMenu">
+                    <ContextMenu x:Name="RightClickMenu">
 
                         <MenuItem Header="_Quick Add"   
                               Click="QuickAdd_Click"  
@@ -47,21 +53,41 @@
         <Rectangle Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="36" Margin="10,31,0,0" Stroke="Black" VerticalAlignment="Top" Width="155"/>
         <Label x:Name="ClockUTC" Content="00:00:00" HorizontalAlignment="Left" Margin="10,26,0,0" VerticalAlignment="Top" Height="44" Width="98" FontSize="24"/>
         <Label x:Name="ClockUTC_Copy" Content="UTC" HorizontalAlignment="Left" Margin="108,26,0,0" VerticalAlignment="Top" Height="44" Width="77" FontSize="24"/>
-        <Label Content="Frequency:" HorizontalAlignment="Left" Margin="10,79,0,0" VerticalAlignment="Top"/>
-        <Label Content="Station:" HorizontalAlignment="Left" Margin="10,105,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="FreqBox" HorizontalAlignment="Left" Height="23" Margin="108,83,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="214"/>
-        <dotNetKitControls:AutoCompleteComboBox x:Name="StationBox" HorizontalAlignment="Left" Height="23" Margin="108,108,0,0" VerticalAlignment="Top" Width="214"/>
-        <Label Content="Country:" HorizontalAlignment="Left" Margin="10,131,0,0" VerticalAlignment="Top"/>
-        <Label Content="Language:" HorizontalAlignment="Left" Margin="10,157,0,0" VerticalAlignment="Top"/>
-        <Label Content="Time Heard:" HorizontalAlignment="Left" Margin="10,183,0,0" VerticalAlignment="Top"/>
-        <Label Content="Broadcast:" HorizontalAlignment="Left" Margin="10,209,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="CountryText" Content="Label" HorizontalAlignment="Left" Margin="108,131,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="LanguageText" Content="Label" HorizontalAlignment="Left" Margin="108,157,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="TimeText" Content="Label" HorizontalAlignment="Left" Margin="108,183,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="BroadcastText" Content="Label" HorizontalAlignment="Left" Margin="108,209,0,0" VerticalAlignment="Top"/>
-        <Label Content="Notes:" HorizontalAlignment="Left" Margin="10,235,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="NotesBox" HorizontalAlignment="Left" Height="157" Margin="108,239,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="214"/>
-        <Button x:Name="FreqSearch" Content="Search" HorizontalAlignment="Left" Margin="334,85,0,0" VerticalAlignment="Top" Width="74"/>
-        <Button x:Name="StationSearch" Content="Search" HorizontalAlignment="Left" Margin="334,111,0,0" VerticalAlignment="Top" Width="75" Click="StationSearch_Click"/>
+        <Label Content="Frequency:" HorizontalAlignment="Left" Margin="19,88,0,0" VerticalAlignment="Top" Height="26" Width="68"/>
+        <Label Content="Station:" HorizontalAlignment="Left" Margin="19,114,0,0" VerticalAlignment="Top" Height="26" Width="50"/>
+        <TextBox x:Name="FreqBox" Height="24" Margin="117,92,109,0" TextWrapping="Wrap" VerticalAlignment="Top" TextChanged="FreqBox_TextChanged"/>
+        <dotNetKitControls:AutoCompleteComboBox x:Name="StationBox" Height="22" Margin="117,118,109,0" VerticalAlignment="Top" SelectionChanged="StationBox_SelectionChanged"/>
+        <Label Content="Country:" HorizontalAlignment="Left" Margin="19,140,0,0" VerticalAlignment="Top" Height="26" Width="56"/>
+        <Label Content="Language:" HorizontalAlignment="Left" Margin="19,166,0,0" VerticalAlignment="Top" Height="26" Width="64"/>
+        <Label Content="Time Heard:" HorizontalAlignment="Left" Margin="19,192,0,0" VerticalAlignment="Top" Height="26" Width="74"/>
+        <Label Content="Broadcast:" HorizontalAlignment="Left" Margin="19,218,0,0" VerticalAlignment="Top" Height="26" Width="66"/>
+        <Label x:Name="CountryText" Content="" HorizontalAlignment="Left" Margin="117,140,0,0" VerticalAlignment="Top" Height="26" Width="214"/>
+        <Label x:Name="LanguageText" Content="" HorizontalAlignment="Left" Margin="117,166,0,0" VerticalAlignment="Top" Height="26" Width="214"/>
+        <Label x:Name="TimeText" Content="" HorizontalAlignment="Left" Margin="117,192,0,0" VerticalAlignment="Top" Height="26" Width="214"/>
+        <Label x:Name="BroadcastText" Content="" HorizontalAlignment="Left" Margin="117,218,0,0" VerticalAlignment="Top" Height="26" Width="214"/>
+        <Label Content="Notes:" HorizontalAlignment="Left" Margin="19,244,0,0" VerticalAlignment="Top" Height="26" Width="44"/>
+        <TextBox x:Name="NotesBox" Margin="117,248,109,14" TextWrapping="Wrap" TextChanged="NotesBox_TextChanged"/>
+        <Button x:Name="FreqSearch" Content="Search" Margin="0,94,30,0" VerticalAlignment="Top" Click="FreqSearch_Click" Height="20" HorizontalAlignment="Right" Width="74"/>
+        <Button x:Name="StationSearch" Content="Search" Margin="0,120,28,0" VerticalAlignment="Top" Click="StationSearch_Click" Height="20" HorizontalAlignment="Right" Width="76"/>
+        <CheckBox x:Name="WebSDRCheck" Content="WebSDR" HorizontalAlignment="Left" Margin="21,276,0,0" VerticalAlignment="Top" Height="14" Width="66"/>
+        <ComboBox x:Name="LanguageCombo" Margin="408,26,19,0" VerticalAlignment="Top" SelectionChanged="LanguageCombo_SelectionChanged" Grid.Column="1" Height="22"/>
+        <Label Content="Language:" Margin="344,22,139,0" VerticalAlignment="Top" Grid.Column="1" Height="26"/>
+        <Button x:Name="reset" Content="Reset" HorizontalAlignment="Left" Margin="27,22,0,0" VerticalAlignment="Top" Width="75" Grid.Column="1" Click="reset_Click" Height="20"/>
+        <Button x:Name="submit" Content="Submit" Click="OnSubmit" Margin="0,0,28,14" FontWeight="Bold" HorizontalAlignment="Right" Width="76" Height="20" VerticalAlignment="Bottom"/>
+        <GroupBox Header="History" Margin="10,13,10,10" Grid.Row="1">
+            <DataGrid x:Name="HistoryGrid" Margin="0,0,-2,-2">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Binding="{Binding Date}" ClipboardContentBinding="{x:Null}" Header="Date" IsReadOnly="True"/>
+                    <DataGridTextColumn Binding="{Binding TimeHeard}" ClipboardContentBinding="{x:Null}" Header="Time" IsReadOnly="True"/>
+                    <DataGridTextColumn Binding="{Binding Frequency}" ClipboardContentBinding="{x:Null}" Header="Frequency" IsReadOnly="True"/>
+                    <DataGridTextColumn Binding="{Binding Station}" ClipboardContentBinding="{x:Null}" Header="Station" IsReadOnly="True"/>
+                    <DataGridTextColumn Binding="{Binding Country}" ClipboardContentBinding="{x:Null}" Header="Country" IsReadOnly="True"/>
+                    <DataGridTextColumn Binding="{Binding Language}" ClipboardContentBinding="{x:Null}" Header="Language" IsReadOnly="True"/>
+                    <DataGridTextColumn Binding="{Binding Broadcast}" ClipboardContentBinding="{x:Null}" Header="Broadcast" IsReadOnly="True"/>
+                    <DataGridTextColumn Binding="{Binding WebSDR}" ClipboardContentBinding="{x:Null}" Header="WebSDR"/>
+                    <DataGridTextColumn Binding="{Binding Notes}" ClipboardContentBinding="{x:Null}" Header="Notes" IsReadOnly="True"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </GroupBox>
     </Grid>
 </Window>
