@@ -31,7 +31,7 @@ namespace SWLogger
         {            
             InitializeComponent();
             d.status.Text =
-            dataPath = path + @"\Data\sked-a20.csv";
+            dataPath = path + @"\Data\sked-b20.csv";
             historyPath = path + @"\Data\History.txt";
             FilePath.Text = dataPath;
             HistoryFile.Text = historyPath;

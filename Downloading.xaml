@@ -7,6 +7,6 @@
         mc:Ignorable="d"
         Title="Initialisation" Height="126" Width="321.2" ResizeMode="NoResize">
     <Grid>
-        <TextBlock x:Name="status" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="Doing stuff" VerticalAlignment="Top" Height="75" Width="293" TextAlignment="Center"/>
+        <TextBlock x:Name="status" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="Downloading sked-b20.csv" VerticalAlignment="Top" Height="75" Width="293" TextAlignment="Center"/>
     </Grid>
 </Window>

@@ -30,13 +30,13 @@ namespace SWLogger
         List<Schedule> onAirEntries = new List<Schedule>();
         List<Contact> historyList = new List<Contact>();
         List<string> stationName = new List<string>();
-        List<string> languages = new List<string> { "All" };
+        List<string> languages = new List<string> {};
         DispatcherTimer dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
         DispatcherTimer minuteTick = new System.Windows.Threading.DispatcherTimer();
         string dataPath;
         string historyPath;
         string[] schedEntry;
-        string language = "";
+        string language = " ";
         string stationText = "";
         int hitIndex = 0;
         bool stationS = true;
@@ -44,7 +44,7 @@ namespace SWLogger
         TimeSpan CurrentTime = new TimeSpan(0, 0, 0);
 
         string uri = "http://www.eibispace.de/dx/";
-        string file = "sked-a20.csv";
+        string file = "sked-b20.csv";
         WebClient client = new WebClient();
 
         public MainWindow()
@@ -84,11 +84,11 @@ namespace SWLogger
                 d.status.Text = string.Format("Successfully downloaded file {0} from {1}...", file, uri);
                 schedEntry = File.ReadAllLines(dataPath);
                 d.status.Text = string.Format("Sorting schedule file...");
-                d.Close();
+                
                 SortDataFile();
+                d.Close();
             }
             StationBox.ItemsSource = stationName;
-
 
             foreach (string entry in schedEntry)
             {
@@ -125,23 +125,33 @@ namespace SWLogger
 
             stationName.Sort();
             languages.Sort();
+            languages.Insert(1, "All");
             LanguageCombo.ItemsSource = languages;
-            LanguageCombo.SelectedIndex = 12;
+            LanguageCombo.SelectedIndex = 1;
             
             UpdateHistory();
         }
         private void UpdateHistory()
         {
             HistoryGrid.Items.Clear();
-            string[] loadHistory = File.ReadAllLines(historyPath);
+            string[] loadHistory = { };
+            try 
+            {
+                loadHistory = File.ReadAllLines(historyPath);
+            }
+            catch(FileNotFoundException)
+            {
+                File.Create(historyPath);
+            }
+
             foreach (string entry in loadHistory)
             {
                 string[] split = entry.Split('|');
-                Contact newContact = new Contact(split, bool.Parse(split[7]), DateTime.Parse(split[split.Length - 1]),"Updating");
+                Contact newContact = new Contact(split, bool.Parse(split[7]), DateTime.Parse(split[split.Length - 1]), "Updating");
 
                 HistoryGrid.Items.Add(newContact);
             }
-        }
+            }
 
         private void minuteTick_Tick(object sender, EventArgs e)
         {
